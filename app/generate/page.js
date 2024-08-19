@@ -4,10 +4,13 @@ import { useState } from "react"
 import { Container, TextField, Button, Typography, Box, Card, CardContent, Dialog, DialogContent, DialogContentText, DialogTitle, DialogActions, Grid } from "@mui/material"
 import { writeBatch, doc, getDoc, setDoc, collection } from "firebase/firestore"
 import { database } from "../../firebase"
+import { LoaderCircle } from "lucide-react"
 
 export default function Generate() {
     const [text, setText] = useState('')
     const [flashcards, setFlashcards] = useState([])
+
+    const [generating, setGenerating] = useState(false) //set to false first, set to true for testing state
 
     const [setName, setSetName] = useState('')
     const [dialogOpen, setDialogOpen] = useState(false)
@@ -52,7 +55,7 @@ export default function Generate() {
             alert('Please eneter some text to generate flashcards')
             return
         }
-
+        setGenerating(true)
         try {
             const response = await fetch('/api/generate', {
                 method: 'POST',
@@ -74,6 +77,7 @@ export default function Generate() {
             console.error('Error generating flashcards:', error)
             alert('An error occurred while generating flashcards. Please try again.')
         }
+        setGenerating(false)
     }
 
     return (
@@ -104,9 +108,10 @@ export default function Generate() {
                     variant='contained'
                     color='primary'
                     onClick={handleSubmit}
+                    disabled={generating}
                     fullWidth
                 >
-                    Generate
+                    {generating ? <span className="animate-spin"><LoaderCircle/></span> : <span>Generate</span>}
                 </Button>
                 {flashcards.length > 0 && (
                     <Box
