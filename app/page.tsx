@@ -1,5 +1,6 @@
 'use client';
 
+import Header from '@/components/Header';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 // import AuthButtonClient from "@/components/AuthButton.client"
@@ -14,12 +15,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-r from-blue-500 to-purple-500 text-white">
       {/* Header */}
-      <header className="w-full bg-blue-800 text-white p-4 shadow-lg">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-3xl font-extrabold">FlashMind ⚡</h1>
-          {/* <AuthButtonClient /> */}
-        </div>
-      </header>
+      <Header/>
 
       {/* Main Content */}
       <main className="flex-1 w-full flex flex-col items-center justify-center text-center py-12 px-6">
