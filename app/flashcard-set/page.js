@@ -21,12 +21,12 @@ export default function FlashcardSet() {
     useEffect(() => {
         async function getFlashcards(){
             if(!fcSetName || !user) return
-            const docRef = doc(collection(database, 'users'), user.id)
+            const docRef = doc(collection(database, `users/${user.id}/flashcardSets/${fcSetName}/flashcards`))
             const docSnap = await getDoc(docRef)
 
             if(docSnap.exists()){
-                const collections = docSnap.data().flashcardSets[fcSetName] || []
-                // console.log(collections)
+                const collections = [...docSnap.data()] || []
+                console.log(collections)
                 setFlashcards(collections)
             } else {
                 // await setDoc(docRef, {flashcards: []})
