@@ -6,8 +6,11 @@ import { writeBatch, doc, getDoc, setDoc, collection } from "firebase/firestore"
 import { database } from "../../firebase"
 import { LoaderCircle } from "lucide-react"
 import Header from "@/components/Header"
+import { SignedIn, SignedOut, useUser } from "@clerk/nextjs"
 
 export default function Generate() {
+    const userObj = useUser()
+
     const [text, setText] = useState('')
     const [flashcards, setFlashcards] = useState([])
 
@@ -25,7 +28,7 @@ export default function Generate() {
             return
         }
         try {
-            const userDocRef = doc(collection(database, 'users'), user.id)
+            const userDocRef = doc(collection(database, 'users'), userObj.user.id)
             const userDocSnap = await getDoc(userDocRef)
             const batch = writeBatch(database)
             if (userDocSnap.exists()) {
@@ -107,15 +110,27 @@ export default function Generate() {
                         variant='outlined'
                         sx={{mb: 2}}
                     />
-                    <Button
-                        variant='contained'
-                        color='primary'
-                        onClick={handleSubmit}
-                        disabled={generating}
-                        fullWidth
-                    >
-                        {generating ? <span className="animate-spin"><LoaderCircle/></span> : <span>Generate</span>}
-                    </Button>
+                    <SignedIn>
+                        <Button
+                            variant='contained'
+                            color='primary'
+                            onClick={handleSubmit}
+                            disabled={generating}
+                            fullWidth
+                        >
+                            {generating ? <span className="animate-spin"><LoaderCircle/></span> : <span>Generate</span>}
+                        </Button>
+                    </SignedIn>
+                    <SignedOut>
+                        <Button
+                            variant='contained'
+                            color='primary'
+                            disabled
+                            fullWidth
+                        >
+                            Sign in to generate flashcards
+                        </Button>
+                    </SignedOut>
                     {flashcards.length > 0 && (
                         <Box
                             sx={{mt: 4}}
